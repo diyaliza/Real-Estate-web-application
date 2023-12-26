@@ -1,0 +1,120 @@
+/* Signup.css */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Oswald', sans-serif;
+  color: #001f3f; /* Navy text color */
+}
+
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+  justify-content: center; /* Center the content vertically */
+  min-height: 100vh;
+  background: linear-gradient(to right, #001f3f, #f2f2f2); /* Adjust gradient colors as needed */
+}
+
+.header {
+  background-image: url('../assets/real_estate_banners.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #f5f5f5;
+  text-align: left;
+  padding: 50px 20px;
+  position: relative;
+  height: 100vh;
+  z-index: 2;
+}
+
+.header h1 {
+  font-size: 9em;
+  margin-bottom: 10px;
+}
+
+.header h3 {
+  font-size: 1.5em;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  margin-bottom: 15px;
+  padding: 10px;
+  width: 100%;
+  max-width: 300px;
+  color: #001f3f;
+}
+
+input::placeholder {
+  color: #001f3f;
+  font-family: 'Oswald', sans-serif;
+}
+
+input[type="submit"] {
+  
+  
+  border: none;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+Link {
+  text-decoration: none;
+  color: #001f3f;
+  font-weight: bold;
+}
+
+
+  
+/* signup.css */
+
+/* Add styles for label and select to be on the same line */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Add margin to separate rows if needed */
+  }
+  
+  label[for="userType"] {
+    margin-right: 10px; /* Adjust the margin as needed */
+  }
+  
+  select#userType {
+    width: 150px; /* Adjust the width as needed */
+    font-family: 'Oswald', sans-serif;
+  }
+  
+  /* Add styles for input and select */
+  .login-form form label {
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .login-form form input,
+  .login-form form select {
+    margin-bottom: 15px;
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    color: #001f3f;
+  }
+  
+  /* Rest of the existing CSS remains unchanged */
+  
+  
