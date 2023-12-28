@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './header'; // Correct import statement
+import NewListingForm from './newListingForm';
+import '../styles/realtorcomponent.css'
 
 
 function RealtorComponent() {
@@ -7,7 +9,7 @@ function RealtorComponent() {
     {
       name: "New Listing",
       color: "#001f3f",
-      href: "#"
+      href: "https:localhost:8000/listing/new"
     },
     {
       name: "My Listings",
@@ -19,14 +21,29 @@ function RealtorComponent() {
       color: "#001f3f",
       href: "#"
     }
-  ];  
+  ]; 
+  const [showNewListingForm, setShowNewListingForm] = useState(false); 
+  const handleItemClick = (index) => {
+    switch(index){
+      case 0:
+        console.log(index)
+        setShowNewListingForm(true);
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
-    <div className="App">
+    <div className="comp">
+      <div>
+        <Header items={items} onItemClick={handleItemClick}/> 
+      </div>
       
-      <Header items={items} /> {/* Use the correct component name (Header) */}
     </div>
   );
+  
+  
 }
 
 export default RealtorComponent; // Use 'export default' instead of 'module.exports'

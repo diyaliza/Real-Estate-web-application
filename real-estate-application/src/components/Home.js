@@ -6,9 +6,11 @@ import '../styles/home.css'
 
 function Home(){
     const location =useLocation()
+    const userName = location.state?.name || 'Guest';
+    const userType = location.state?.userType || 'Unknown';
     return (
         <div className="homePage">
-            <h1>Welcome, {location.state.name}</h1>
+            <h1>Welcome, {userName} and you are a {userType}</h1>
             
             
             {location.state.userType === 'realtor' ? (
