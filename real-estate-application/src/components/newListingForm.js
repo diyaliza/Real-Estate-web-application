@@ -1,17 +1,21 @@
 // NewListingForm.jsx
+import {useNavigate, Link} from "react-router-dom"
 import React, { useState } from 'react';
 import '../styles/menu.css';
+import axios from "axios"
 
-const NewListingForm = () => {
+const NewListingForm = ({user}) => {
+  const history=useNavigate()
   const [listingData, setListingData] = useState({
+    listingId: '',
     title: '',
     description: '',
     price: '',
     bedrooms: '',
     bathrooms: '',
     location: '',
-    contactName: '',
-    contactEmail: '',
+    contactName: user.name,
+    contactEmail: user.email,
     contactPhone: '',
   });
 
@@ -23,14 +27,59 @@ const NewListingForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // Perform actions with listing data, e.g., send to server
-    console.log('Listing form submitted:', listingData);
-  };
+    try {
+      console.log(listingData);
+      await axios
+        .post("http://localhost:8000/list", {
+          listingData,
+        })
+        .then((res) => {
+          if (res.data.status === "success") {
+            alert("Listing added!");
+            // Clear form fields after successful submission
+            setListingData({
+              listingId:'',
+              title: '',
+              description: '',
+              price: '',
+              bedrooms: '',
+              bathrooms: '',
+              location: '',
+              contactName: '',
+              contactEmail: '',
+              contactPhone: '',
+            });
+            history("/home", { state: user });
+          } else if (res.data.status === "failure") {
+            alert(res.data.message);
+          }
+        })
+        .catch((e) => {
+          alert("Wrong details");
+          console.log(e);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  
+
+ 
 
   return (
     <form className='realtor-listing-form' onSubmit={handleSubmit}>
+      <p>
+        <label htmlFor='listingId'>Listing ID:</label>
+        <input
+          id='title'
+          type='text'
+          name='listingId'
+          value={listingData.listingId}
+          onChange={handleChange}
+        />
+      </p>
       <p>
         <label htmlFor='title'>Title:</label>
         <input

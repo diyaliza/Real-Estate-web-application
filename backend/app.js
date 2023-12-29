@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require('mongoose');
 const user = require('../backend/models/userModel')
+const listing = require('../backend/models/listingModel')
 const cors = require("cors")
 const app = express()
 const dotenv = require('dotenv')
@@ -30,9 +31,31 @@ mongoose
     console.log('DB connection failed!');
     console.log(err); 
   });
-app.get("/",cors(),(req, res)=>{
-
-})
+  app.get('/list/:userid', async (req, res) => {
+    const { userid } = req.params;
+    try {
+      // Assuming you have a model named 'Listing'
+      const listingUser = await user.find({ userId: userid})
+      console.log(listingUser[0].email)
+      const listings = await listing.find({ contactEmail: listingUser[0].email });
+      res.json(listings);
+    } catch (e) {
+      console.error('Error fetching listings:', e);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  app.get('/listing/:listingId', async(req, res) => {
+    const {listingId} = req.params;
+    try{
+      const listingItem = await listing.find({listingId: listingId});
+      console.log(listingItem)
+      res.json(listingItem[0]);
+    }catch (e) {
+      console.error('Error fetching listings:', e);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
+  
 
 app.post("/", async (req, res) => {
     const { email, password } = req.body;
@@ -71,10 +94,44 @@ app.post("/", async (req, res) => {
     }
 });
 
+app.post("/list", async (req, res) => {
+  console.log(req.body)
+  const { listingId, bathrooms, bedrooms, contactEmail, contactName, contactPhone, description, location, price, title } = req.body.listingData;
+    const data = {
+      listingId: listingId,
+      bathrooms: bathrooms,
+      bedrooms: bedrooms,
+      contactEmail: contactEmail,
+      contactName: contactName,
+      contactPhone: contactPhone,
+      description: description,
+      location: location,
+      price: price,
+      title: title
+    };
+    try{
+      //console.log(data)
+      await listing.insertMany([data]);
+      res.json({
+        status: "success",
+        message: "Listing registered successfully",
+      });
+    }catch(e){
+      console.error(e);
+      res.json({
+        status: "error",
+        message: "An error occurred",
+      });
+
+    }
+    
+})
+
 
 app.post("/signup", async (req, res) => {
-    const { name, email, password, userType, passwordConfirmation } = req.body;
+    const { userId, name, email, password, userType, passwordConfirmation } = req.body;
     const data = {
+      userId: userId,
       name: name,
       email: email,
       password: password,
@@ -83,7 +140,7 @@ app.post("/signup", async (req, res) => {
     };
   
     try {
-      const checkEmail = await user.findOne({ email: email });
+      const checkEmail = await user.findOne({ userId: userId });
   
       if (checkEmail) {
         // Email already exists

@@ -1,0 +1,44 @@
+/* ListingDetails.css */
+.listing-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Added to center horizontally */
+    margin-top: 20px;
+  }
+  
+  .detail-label {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  
+  .detail-value {
+    margin-bottom: 15px;
+  }
+  
+  .title {
+    font-size: 24px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  .details-section {
+    width: 50%;
+  }
+  
+  /* Added to have buttons on a single line */
+  .btn-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Updated button styles */
+  .btn {
+    width: calc(30% - 10px); /* Adjust the width based on your preference */
+    margin-right: 10px;
+  }
+  

@@ -14,7 +14,7 @@ function Home(){
             
             
             {location.state.userType === 'realtor' ? (
-                <RealtorComponent />
+                <RealtorComponent user={location.state}/>
             ) : (
                 <BuyerComponent />
             )}

@@ -1,60 +1,47 @@
-
 const mongoose = require('mongoose');
-// import bcryptjs
 const bcrypt = require('bcryptjs');
 
+
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please tell us your name!']
-  },
-  email: {
-    type: String,
-    required: [true, 'Please provide your email'],
-    unique: true,
-    lowercase: true
-  },
-  userType: {
-    type: String,
-    enum: ['realtor', 'buyer'],
-    default: 'realtor'
-  },
-  password: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    minlength: 8
-  },
-  // validate password
+  userId: { type: Number, required: true, unique: true },
+  name: { type: String, required: [true, 'Please tell us your name!'] },
+  email: { type: String, required: [true, 'Please provide your email'], unique: true, lowercase: true },
+  userType: { type: String, enum: ['realtor', 'buyer'], default: 'realtor' },
+  password: { type: String, required: [true, 'Please provide a password'], minlength: 8 },
   passwordConfirmation: {
     type: String,
     required: [true, 'Please confirm your password'],
-    // validate will only work on save or creating the user
-    validate:{
-        validator: function(pwd){
-          return pwd === this.password;
-        },
-        message: " the password confirmation did not match"
+    validate: {
+      validator: function (pwd) {
+        return pwd === this.password;
+      },
+      message: "The password confirmation did not match"
     }
   },
   passwordChangedAt: Date,
   passwordResetExpires: Date,
 });
 
-// add encrypting the password middleware
-userSchema.pre('save', async function(next){
-  if(!this.isModified('password')){
+// Apply the auto-increment plugin to the userId field
+
+
+// Add encrypting the password middleware
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     return next;
   }
-  // if new and modified
-  // npm install bcryptjs
-  this.password = await bcrypt.hash(this.password, 12); // how intensive the CPU will be
-  this.passwordConfirmation = undefined; // we dop not want to store in database
+
+  // If new and modified
+  this.password = await bcrypt.hash(this.password, 12); // How intensive the CPU will be
+  this.passwordConfirmation = undefined; // We do not want to store in the database
   next();
 });
-//model instance method will be available to all the instance of the user.
-userSchema.methods.isPasswordMatch = async (userSuppliedPassword, currentHashedPasswordInDB)=>{
-  return await bcrypt.compare(userSuppliedPassword, currentHashedPasswordInDB)
-}
+
+// Model instance method will be available to all instances of the user.
+userSchema.methods.isPasswordMatch = async (userSuppliedPassword, currentHashedPasswordInDB) => {
+  return await bcrypt.compare(userSuppliedPassword, currentHashedPasswordInDB);
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

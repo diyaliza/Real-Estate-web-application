@@ -6,6 +6,7 @@ import "../styles/signup.css"; // Import the new stylesheet
 
 function Signup() {
   const history = useNavigate();
+  const [userId, setUserId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,6 +17,7 @@ function Signup() {
     e.preventDefault();
     try {
       await axios.post("http://localhost:8000/signup", {
+        userId,
         name,
         email,
         password,
@@ -47,6 +49,15 @@ function Signup() {
     <div className="signup-container">
       <h1>Signup</h1>
       <form action="POST">
+      <input
+          type="text"
+          onChange={(e) => {
+            setUserId(e.target.value);
+          }}
+          placeholder="UserId"
+          name=""
+          id=""
+        ></input>
       <input
           type="text"
           onChange={(e) => {

@@ -2,8 +2,9 @@ import React, { useRef, useState, useEffect, createRef } from 'react';
 import gsap from 'gsap';
 import '../styles/menu.css';
 import NewListingForm from './newListingForm';
+import MyListings from './myListings';
 
-const Header = ({ items }) => {
+const Header = ({ items, user }) => {
   const $root = useRef();
   const $indicator1 = useRef();
   const $indicator2 = useRef();
@@ -11,6 +12,7 @@ const Header = ({ items }) => {
   const [hoveredItem, setHoveredItem] = useState(-1);
   const [clickedItem, setClickedItem] = useState(-1);
   const [showNewListingForm, setShowNewListingForm] = useState(false);
+  const [showMyListings, setShowMyListings] = useState(false); 
 
   const animate = () => {
     const activeItem = $items.current[clickedItem !== -1 ? clickedItem : hoveredItem];
@@ -54,7 +56,20 @@ const Header = ({ items }) => {
 
   const handleItemClick = (index) => {
     setClickedItem((prev) => (prev === index ? -1 : index)); // Toggle the clicked item
-    setShowNewListingForm(index === 0); // Show the form for the clicked item
+    switch(index){
+      case 0:
+        setShowNewListingForm(true);
+        setShowMyListings(false);
+        break;
+      case 1:
+        setShowNewListingForm(false);
+        setShowMyListings(true);
+        break;
+      default:
+        setShowNewListingForm(false);
+        setShowMyListings(false);
+    }
+   
   };
 
   return (
@@ -75,7 +90,8 @@ const Header = ({ items }) => {
         <div ref={$indicator2} className="indicator" />
       </div>
       <div className = "item-show">
-        {showNewListingForm && <NewListingForm />}
+        {showNewListingForm && <NewListingForm user={user}/>}
+        {showMyListings && <MyListings user={user} />}
         </div>
     </div>
   );

@@ -4,7 +4,7 @@ import NewListingForm from './newListingForm';
 import '../styles/realtorcomponent.css'
 
 
-function RealtorComponent() {
+function RealtorComponent({ user }) {
   const items = [
     {
       name: "New Listing",
@@ -23,11 +23,18 @@ function RealtorComponent() {
     }
   ]; 
   const [showNewListingForm, setShowNewListingForm] = useState(false); 
+  const [showMyListings, setShowMyListings] = useState(false); 
   const handleItemClick = (index) => {
     switch(index){
       case 0:
         console.log(index)
         setShowNewListingForm(true);
+        setShowMyListings(false);
+        break;
+      case 1:
+        console.log(index)
+        setShowMyListings(true);
+        setShowNewListingForm(false);
         break;
       default:
         break;
@@ -37,7 +44,7 @@ function RealtorComponent() {
   return (
     <div className="comp">
       <div>
-        <Header items={items} onItemClick={handleItemClick}/> 
+        <Header items={items} onItemClick={handleItemClick} user={user}/> 
       </div>
       
     </div>
