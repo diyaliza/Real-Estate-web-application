@@ -4,19 +4,20 @@ import RealtorComponent from "./realtorcomponent";
 import BuyerComponent from "./buyercomponent";
 import '../styles/home.css'
 
-function Home(){
+function Home({}){
     const location =useLocation()
-    const userName = location.state?.name || 'Guest';
-    const userType = location.state?.userType || 'Unknown';
+    const userName = location.state?.name || "Guest"
+    const userType = location.state?.userType || "Unknown";
+    console.log(userName)
     return (
         <div className="homePage">
             <h1>Welcome, {userName} and you are a {userType}</h1>
             
             
-            {location.state.userType === 'realtor' ? (
+            {userType === 'realtor' ? (
                 <RealtorComponent user={location.state}/>
             ) : (
-                <BuyerComponent />
+                <BuyerComponent user={location.state} />
             )}
         </div>
     )

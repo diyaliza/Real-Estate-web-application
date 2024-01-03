@@ -7,14 +7,15 @@ import axios from 'axios';
 import '../styles/realtorcomponent.css';
 
 
-function MyListings({ user }) {
+function Listings({ user }) {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        console.log(user.userId);
-        const response = await axios.get(`http://localhost:8000/list/${user.userId}`);
+        console.log(user);
+        const response = await axios.get(`http://localhost:8000/listings`);
+        console.log(response.data)
         setListings(response.data);
       } catch (error) {
         console.error('Error fetching listings:', error);
@@ -33,7 +34,7 @@ function MyListings({ user }) {
             <Card.Title className="uppercase-title">{listing.title}</Card.Title>
             <Card.Text className="lowercase-text">{listing.description}</Card.Text>
             <Button variant="primary">{listing.status}</Button><br></br>
-            <Link to={{ pathname: `/listing/${listing.listingId}/${user.userId}`}}>
+            <Link to={{ pathname: `/buyerlisting/${listing.listingId}/${user.userId}`}}>
               <Button variant="primary">View Details</Button>
             </Link>
           </Card.Body>
@@ -43,4 +44,4 @@ function MyListings({ user }) {
   );
 }
 
-export default MyListings;
+export default Listings;

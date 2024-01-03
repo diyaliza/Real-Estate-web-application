@@ -4,14 +4,30 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/realtorcomponent.css'; // Import common styles
 import '../styles/listingDetails.css'; // Import the CSS file
+import BidForm from './bidForm';
+import BidList from './bidList';
 
-const ListingDetails = ({}) => {
-  const location =useLocation()
+const BuyerListingDetails = ({}) => {
   const { listingId, userId } = useParams();
-  console.log(listingId, userId)
-  const history = useNavigate(); 
+  const history = useNavigate();
   const [listingDetails, setListingDetails] = useState(null);
   const [user, setUser] = useState(null);
+  const [showBidForm, setShowBidForm] = useState(false);
+  const [showBidList, setShowBidList] = useState(false); // New state to toggle bid list
+
+  const handlePlaceBid = () => {
+    setShowBidForm(false);
+    setShowBidForm(true);
+  };
+
+  const handleViewBids = () => {
+    setShowBidForm(false);
+    setShowBidList(true);
+  };
+
+  const handleCloseBidForm = () => {
+    setShowBidForm(false);
+  };
 
   useEffect(() => {
     const fetchListingDetails = async () => {
@@ -22,31 +38,20 @@ const ListingDetails = ({}) => {
         console.error('Error fetching listing details:', error);
       }
     };
+
     const fetchUserDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/user/${userId}`);
         setUser(response.data);
-        console.log(user)
       } catch (error) {
-        console.error('Error fetching listing details:', error);
+        console.error('Error fetching user details:', error);
       }
     };
+
     fetchUserDetails();
     fetchListingDetails();
   }, [listingId]);
-  const handleDealClosure = async () => {
-    try {
-      // Make a request to update the listing status to "Closed"
-      await axios.put(`http://localhost:8000/listing/${listingId}/close`);
-      alert('Congratulations! Deal closed')
-      
-      // Redirect to a different page or update the UI as needed
-      // For example, you can redirect the user to the home page
-      history('/home', {state: user});
-    } catch (error) {
-      console.error('Error closing the deal:', error);
-    }
-  };
+
 
   if (!listingDetails) {
     return <div>Loading...</div>;
@@ -84,12 +89,21 @@ const ListingDetails = ({}) => {
         <div className="detail-value">{listingDetails.bids}</div>
       </div>
       <div className="btn-container">
-      <button className="btn btn-primary">Delete Listing</button>
-      <button className="btn btn-primary">View Bids</button>
-      <button className="btn btn-primary" onClick={handleDealClosure}>Close the Deal</button>
+      <button className="btn btn-primary" onClick={handlePlaceBid}>
+          Place Bid
+        </button>
+        <button className="btn btn-primary" onClick={handleViewBids}>
+          View Bids
+        </button>
+      
     </div>
+    {showBidForm && (
+        <BidForm listing={listingDetails} user={user} onClose={handleCloseBidForm} />
+      )}
+      {showBidList && <BidList listingId={listingId} />}
+    
     </div>
   );
 };
 
-export default ListingDetails;
+export default BuyerListingDetails;

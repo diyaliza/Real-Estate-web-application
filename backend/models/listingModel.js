@@ -12,7 +12,8 @@ const listingSchema = new mongoose.Schema({
   location: { type: String, required: [true, 'Please provide the location'] },
   price: { type: Number, required: [true, 'Please provide the price'] },
   title: { type: String, required: [true, 'Please provide a title'] },
-  bids: { type: Number, default: 0 }
+  bids: { type: Number, default: 0 },
+  status: {type: String, enum: ['Active', 'Closed'],default: 'Active'}
 });
 
 // Apply the auto-increment plugin to the listingId field

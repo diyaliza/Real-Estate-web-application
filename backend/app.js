@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require('mongoose');
 const user = require('../backend/models/userModel')
+const Bidding = require('../backend/models/biddingModel')
 const listing = require('../backend/models/listingModel')
 const cors = require("cors")
 const app = express()
@@ -31,6 +32,8 @@ mongoose
     console.log('DB connection failed!');
     console.log(err); 
   });
+
+
   app.get('/list/:userid', async (req, res) => {
     const { userid } = req.params;
     try {
@@ -54,9 +57,70 @@ mongoose
       console.error('Error fetching listings:', e);
       res.status(500).json({ error: 'Internal Server Error' });
     }
+  }) 
+  app.get('/listings',async(req, res)=>{
+    
+    try {
+      const listingsRecords = await listing.find({status:'Active'});
+      console.log('listingsRecords',listingsRecords)
+      res.json(listingsRecords);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
-  
 
+  app.post('/bid', async (req, res) => {
+    try {
+      const bidData = req.body.bidData;
+      console.log('bidData', bidData)
+  
+      // Assuming your Bidding model has fields like listingId, listingName, biddingPrice, userName, contactEmail, contactPhone
+      const newBid = new Bidding({
+        listingId: bidData.listingId,
+        listingName: bidData.listingName,
+        biddingPrice: bidData.biddingPrice,
+        userName: bidData.userName,
+        contactEmail: bidData.contactEmail,
+        contactPhone: bidData.contactPhone,
+        // Set other fields as needed
+      });
+      console.log(newBid)
+  
+      // Save the new bid to the database
+      await newBid.save();
+  
+      res.status(201).json({ message: 'Bid placed successfully' });
+    } catch (error) {
+      console.error('Error placing bid:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  app.get('/bids/:listingId', async (req, res) => {
+    try {
+      const listingId = req.params.listingId;
+  
+      // Fetch all bids for the given listingId from the database
+      const bids = await Bidding.find({ listingId });
+  
+      res.status(200).json(bids);
+    } catch (error) {
+      console.error('Error fetching bids:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+app.get('/user/:userId', async( req, res) => {
+  const {userId} = req.params
+  console.log('useriD', userId)
+  try{
+    const userRecord = await user.findOne({ userId: userId});
+    console.log('user',userRecord)
+    res.json(userRecord)
+  }catch(e){
+    console.log(e)
+    res.json({message:e})
+  }
+})
 app.post("/", async (req, res) => {
     const { email, password } = req.body;
   
@@ -93,7 +157,6 @@ app.post("/", async (req, res) => {
       });
     }
 });
-
 app.post("/list", async (req, res) => {
   console.log(req.body)
   const { listingId, bathrooms, bedrooms, contactEmail, contactName, contactPhone, description, location, price, title } = req.body.listingData;
@@ -126,8 +189,6 @@ app.post("/list", async (req, res) => {
     }
     
 })
-
-
 app.post("/signup", async (req, res) => {
     const { userId, name, email, password, userType, passwordConfirmation } = req.body;
     const data = {
@@ -176,6 +237,23 @@ app.post("/signup", async (req, res) => {
       });
     }
   });
+app.put("/listing/:listingId/close", async(req, res) => {
+  const {listingId} = req.params;
+  console.log(listingId)
+    try{
+      let listingItem = await listing.find({listingId: listingId});
+      listingItem = listingItem[0]
+      
+      console.log("changed - >", listingItem.status)
+      listingItem.status = 'Closed';
+      await listingItem.save();
+      res.json({ message: 'Listing closed successfully' });
+    }catch (e) {
+      console.error('Error fetching listings:', e);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+})
   
 app.listen(8000,()=>{
     console.log("port connected")
